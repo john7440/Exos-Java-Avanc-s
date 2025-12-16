@@ -18,7 +18,7 @@ public class FoundException {
             System.err.println("Erreur: " + e.getMessage());
             e.printStackTrace();
         } finally{
-            System.out.println("L'éxécution est términée!");
+            System.out.println("L'exécution est terminée!");
         }
 
     }
