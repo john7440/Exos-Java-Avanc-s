@@ -15,6 +15,7 @@ public class Celebrities {
 	// so they are a potential celebrities
 	public static Set<Integer> findKnownByEveryone(Map<Integer, String> guestNames , Map<Integer, List<Integer>> knownGuests) throws InvalidGuestDataException{
 
+        //ajouts des exceptions pour liste null ou vide
         if (guestNames == null) {
             throw new IllegalArgumentException("La liste des invités ne peut pas être null");
         }
@@ -27,12 +28,19 @@ public class Celebrities {
 
 		// We initialize our set to stock potentialCelebrities (known by all)
 		Set<Integer> potentialCelebrities = new HashSet<>();
-		
+
 		// We check for each guest 
 		for (Integer guestId : guestNames.keySet()) {
+            //exception pour l'id du guest (si, il est nul)
+            if (guestId == null) {
+                throw new InvalidGuestDataException("Un ID d'invité ne peut pas être null!");
+            }
 			boolean knownByAll = true;
-			
+			//de même pour otherGuest
 			for (Integer otherGuestId: guestNames.keySet()) {
+                if (otherGuestId == null) {
+                    throw new InvalidGuestDataException("Un ID d'invité ne peut pas être null");
+                }
 				
 				if (!otherGuestId.equals(guestId)) {
 					List<Integer> known = knownGuests.get(otherGuestId);
