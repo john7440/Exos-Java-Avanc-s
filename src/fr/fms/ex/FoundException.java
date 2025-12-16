@@ -12,7 +12,13 @@ public class FoundException {
         } catch (NullPointerException e){
             System.out.println("Erreur: tentative d'accès à un objet null!");
             System.out.println(e.getMessage());
+            System.err.println("Type d'exception: " + e.getClass().getName());
             e.printStackTrace();
+        } catch (Exception e){
+            System.err.println("Erreur: " + e.getMessage());
+            e.printStackTrace();
+        } finally{
+            System.out.println("L'éxécution est términée!");
         }
 
     }
