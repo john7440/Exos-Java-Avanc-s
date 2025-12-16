@@ -22,5 +22,7 @@ public class TestThread extends Thread {
         t4.start();
         t2.start();
         t3.start();
-    } 
+    }
+
+    // Le résultat diffère car il n'y as pas de lock sur les concurrences
 }
