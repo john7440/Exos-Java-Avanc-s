@@ -7,30 +7,32 @@ import java.util.Date;
 public class ThreadTime {
 
   public static void main(String[] args) {
-    DateFormat df = new SimpleDateFormat("HH:mm:ss");
     Thread thread = new Thread(new MonRunnable(1000));
-
-    System.out.println(df.format(new Date()));
-
     thread.start();
   }
 
   private static class MonRunnable implements Runnable {
 
-    private long delai;
+    private final long delai;
 
-    public MonRunnable(long delai) {
-      this.delai = delai;
+    public MonRunnable(long delai)  {
+        this.delai = delai;
     }
 
     @Override
     public void run() {
+        DateFormat df = new SimpleDateFormat("HH:mm:ss");
+
     	while(true) {
 	      try {
+              System.out.print("\r" + df.format(new Date()));
+
 	        Thread.sleep(delai);
-	        System.out.println("-");
+
 	      } catch (InterruptedException e) {
-	        e.printStackTrace();
+              System.err.println("\nThread interrompu: " + e.getMessage());
+              Thread.currentThread().interrupt();
+              break;
 	      }
     	}
     }
