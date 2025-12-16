@@ -2,7 +2,7 @@ package fr.fms.ex;
 
 import java.util.Date;
 
-public class FoundException {
+public class FoundException extends Exception {
     public static void main(String[] args) {
         Date date = null;
         Date today = new Date();
