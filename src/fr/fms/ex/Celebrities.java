@@ -63,9 +63,18 @@ public class Celebrities {
 	
 	// This method filters the list of potential celebrities where
     // a true celebrity must only know other celebrities
-	public static Set<Integer> filteringCelebrities(Set<Integer> candidates, Map<Integer, List<Integer>> knownGuests) {
-		
-		// We create a copy of candidates
+	public static Set<Integer> filteringCelebrities(Set<Integer> candidates, Map<Integer, List<Integer>> knownGuests) throws InvalidGuestDataException{
+
+        //on fait une validation des paramètres
+        if (candidates == null) {
+            throw new IllegalArgumentException("La liste des candidats ne peut pas être null");
+        }
+        if (knownGuests == null) {
+            throw new IllegalArgumentException("La liste des connaissances ne peut pas être null");
+        }
+
+
+        // We create a copy of candidates
 	    Set<Integer> celebrities = new HashSet<>(candidates);
 	    
 	    // boolean to know if it was changed or not (to know if
@@ -73,46 +82,52 @@ public class Celebrities {
 	    boolean changed;
 
 	 // Repeat until the list of celebrities stabilizes
-	    do {
-	        changed = false;
-	        
-	        // We put every candidate that must be deleted on that turn 
-	        Set<Integer> setToRemove = new HashSet<>();
+	    try{
+            do {
+                changed = false;
 
-	        //For each candidate still in the celebrities list, we search
-	        // who they know
-	        for (Integer candidateId : celebrities) {
-	            List<Integer> knownByCandidate = knownGuests.get(candidateId);
-	            
-	         // Check if the candidate knows only other celebrities, if not then
-	            // he/she can't be a celebrities and we add him to setToRemove and
-	            // stop checking for this candidate
-	            if (knownByCandidate != null) {
-	                for (Integer knownId : knownByCandidate) {
-	                    if (!celebrities.contains(knownId)) {
-	                        setToRemove.add(candidateId);
-	                        break;
-	                    }
-	                }
-	            }
-	        }
-	        
-	        // Remove candidates who know non-celebrities guests and 
-	        // we set the boolean changed to true, to specify we must do another
-	        // iteration
-	        if (!setToRemove.isEmpty()) {
-	            celebrities.removeAll(setToRemove);
-	            changed = true;
-	        }
-	       
-	        // This loop continue while changes were done (we know it because of 
-	        // the boolean)
-	    } while (changed);
+                // We put every candidate that must be deleted on that turn
+                Set<Integer> setToRemove = new HashSet<>();
 
-	    return celebrities;
+                //For each candidate still in the celebrities list, we search
+                // who they know
+                for (Integer candidateId : celebrities) {
+                    if (candidateId == null) {
+                        throw new InvalidGuestDataException("Un ID de candidat ne peut pas être null");
+                    }
+                    List<Integer> knownByCandidate = knownGuests.get(candidateId);
+
+                    // Check if the candidate knows only other celebrities, if not then
+                    // he/she can't be a celebrities, then we add him to setToRemove and
+                    // stop checking for this candidate
+                    if (knownByCandidate != null) {
+                        for (Integer knownId : knownByCandidate) {
+                            if (!celebrities.contains(knownId)) {
+                                setToRemove.add(candidateId);
+                                break;
+                            }
+                        }
+                    }
+                }
+                // Remove candidates who know non-celebrities guests and
+                // we set the boolean changed to true, to specify we must do another
+                // iteration
+                if (!setToRemove.isEmpty()) {
+                    celebrities.removeAll(setToRemove);
+                    changed = true;
+                }
+
+                // This loop continue while changes were done (we know it because of
+                // the boolean)
+            } while (changed);
+
+        } catch (NullPointerException e) {
+            throw new InvalidGuestDataException("Erreur lors du traitement des données: " + e.getMessage());
+        }
+        return celebrities;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InvalidGuestDataException {
 		
 		// Our guests list with their id and names
         Map<Integer, String> guestNames = new HashMap<>();
@@ -139,7 +154,7 @@ public class Celebrities {
         // We find every guest who is known by everyone
         Set<Integer> knownByEveryone = findKnownByEveryone(guestNames, knownGuests);
         
-        // Then we filter if they known other celebrities
+        // Then we filter if they know other celebrities
         Set<Integer> validatedCelebrities = filteringCelebrities(knownByEveryone, knownGuests);
         
         //Final display of all celebrities found or a message to say there is none
