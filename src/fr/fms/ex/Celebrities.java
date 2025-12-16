@@ -13,8 +13,18 @@ public class Celebrities {
 	
 	// This method find guests who are known by every other guests
 	// so they are a potential celebrities
-	public static Set<Integer> findKnownByEveryone(Map<Integer, String> guestNames , Map<Integer, List<Integer>> knownGuests){
-		
+	public static Set<Integer> findKnownByEveryone(Map<Integer, String> guestNames , Map<Integer, List<Integer>> knownGuests) throws InvalidGuestDataException{
+
+        if (guestNames == null) {
+            throw new IllegalArgumentException("La liste des invités ne peut pas être null");
+        }
+        if (knownGuests == null) {
+            throw new IllegalArgumentException("La liste des connaissances ne peut pas être null!");
+        }
+        if (guestNames.isEmpty()){
+            throw new InvalidGuestDataException("La liste des invités ne peut pas être vide!");
+        }
+
 		// We initialize our set to stock potentialCelebrities (known by all)
 		Set<Integer> potentialCelebrities = new HashSet<>();
 		
