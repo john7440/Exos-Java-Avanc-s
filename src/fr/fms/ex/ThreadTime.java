@@ -14,16 +14,21 @@ public class ThreadTime {
   private static class MonRunnable implements Runnable {
 
     private final long delai;
+    private volatile boolean running = true;
 
     public MonRunnable(long delai)  {
         this.delai = delai;
     }
 
+      public void stop() {
+          running = false;
+      }
+
     @Override
     public void run() {
         DateFormat df = new SimpleDateFormat("HH:mm:ss");
 
-    	while(true) {
+    	while(running) {
 	      try {
               System.out.print("\r" + df.format(new Date()));
 
@@ -32,9 +37,10 @@ public class ThreadTime {
 	      } catch (InterruptedException e) {
               System.err.println("\nThread interrompu: " + e.getMessage());
               Thread.currentThread().interrupt();
-              break;
+              stop();
 	      }
     	}
+        System.out.println("\nArrêt de l'horloge");
     }
   }
 }
